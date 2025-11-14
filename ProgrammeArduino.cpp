@@ -251,7 +251,7 @@ void markSeen(SessionState &ss, const String& uid) {
 
 // Nom du fichier CSV de présence du créneau
 String attendanceFilename(const SessionState &ss) {
-  return String("/ATTEND_") + ss.date + "_" + minToHHMM(ss.startMin) + "_" + minToHHMM(ss.endMin) + "_" + ss.codeProf + ".csv";
+  return String("/PRESENCE_") + ss.date + "_" + minToHHMM(ss.startMin) + "_" + minToHHMM(ss.endMin) + "_" + ss.codeProf + ".csv";
 }
 
 // Append ligne CSV
@@ -272,7 +272,7 @@ void finalizeSession(SessionState &ss) {
   if (ss.finalized) return;
   ss.finalized = true;
 
-  // Construire un set des UIDs vus (naïf, mais suffisant)
+  // Construire un set des UIDs vus
   // On va scanner students.csv, et pour toute ligne dont le group ∈ session.groups, si UID non dans seen → ABSENT
   File f = SD.open("/students.csv", FILE_READ);
   if (!f) { Serial.println(F("ERR: students.csv missing")); return; }
@@ -420,7 +420,7 @@ void loop() {
   // Double badge ?
   if (alreadySeen(*match, uid)) {
     Serial.println(F("Already checked-in for this session."));
-    // Retour visuel but pas d’erreur sonore
+    // Retour visuel
     digitalWrite(PIN_LED_OK, HIGH); delay(80); digitalWrite(PIN_LED_OK, LOW);
     mfrc522.PICC_HaltA();
     return;
