@@ -1,3 +1,6 @@
+#include <Arduino.h>
+#include "board_init.h"
+
 void initializeBoard() {
     // Set pin modes for the Arduino Uno Rev4
     pinMode(LED_BUILTIN, OUTPUT); // Initialize the built-in LED pin as an output

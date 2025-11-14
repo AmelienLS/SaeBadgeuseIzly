@@ -3,7 +3,7 @@
 
 void setup() {
     // Initialize the board
-    initializeBoard();
+    boardInit();
 }
 
 void loop() {
