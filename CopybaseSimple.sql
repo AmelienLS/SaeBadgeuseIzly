@@ -5,7 +5,7 @@
 
 -- Fenêtre de dates pour réduire le volume
 SET @PAST_DAYS   := 1;     -- jours en arrière
-SET @FUTURE_DAYS := 1;    -- jours en avant
+SET @FUTURE_DAYS := 7;    -- jours en avant
 
 -- Crée la base destination si besoin
 CREATE DATABASE IF NOT EXISTS `DST_DB`
@@ -111,7 +111,7 @@ WHERE       (COALESCE(hg.deleted,0)=0)
            OR hg.codeRessourceFille IN (SELECT codeGroupe FROM `DST_DB`.`ressources_groupes`)
            );
 
--- 6) (OPTIONNEL) INDEXS UTILES POUR LES LOOKUPS RAPIDES
+-- 6) INDEXES UTILES POUR LES LOOKUPS RAPIDES
 ALTER TABLE `DST_DB`.`seances`           ADD INDEX idx_date_heure (dateSeance, heureSeance);
 ALTER TABLE `DST_DB`.`seances_profs`     ADD INDEX idx_sp (codeSeance, codeRessource);
 ALTER TABLE `DST_DB`.`seances_groupes`   ADD INDEX idx_sg (codeSeance, codeRessource);
