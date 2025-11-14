@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Arduino Uno Rev4",
+            "type": "arduino",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/firmware/src/main.ino",
+            "cwd": "${workspaceFolder}/src/firmware/src",
+            "port": "COM3", // Change this to your Arduino port
+            "stopAtEntry": false,
+            "preLaunchTask": "upload",
+            "postDebugTask": "monitor"
+        }
+    ]
+}
