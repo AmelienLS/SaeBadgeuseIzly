@@ -111,7 +111,7 @@ WHERE       (COALESCE(hg.deleted,0)=0)
            OR hg.codeRessourceFille IN (SELECT codeGroupe FROM `DST_DB`.`ressources_groupes`)
            );
 
--- 6) INDEXS UTILES POUR LES LOOKUPS RAPIDES
+-- 6) INDEXES UTILES POUR LES LOOKUPS RAPIDES
 ALTER TABLE `DST_DB`.`seances`           ADD INDEX idx_date_heure (dateSeance, heureSeance);
 ALTER TABLE `DST_DB`.`seances_profs`     ADD INDEX idx_sp (codeSeance, codeRessource);
 ALTER TABLE `DST_DB`.`seances_groupes`   ADD INDEX idx_sg (codeSeance, codeRessource);
