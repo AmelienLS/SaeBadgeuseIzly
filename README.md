@@ -1,38 +1,38 @@
-# Arduino Uno Rev4 Initialization Project
+# SAE Badgeuse (Arduino UNO R4)
 
-This project is designed to initialize and run basic functionalities on the Arduino Uno Rev4. It includes the necessary setup for the board and provides a framework for further development.
+Firmware scaffold for an Arduino UNO R4 (Minima or WiFi) badge reader that buffers badge events locally and exposes a simple serial protocol for a future database/backend bridge.
 
 ## Project Structure
 
-- **src/**: Contains the source code files.
-  - **main.cpp**: Entry point of the Arduino project, containing the setup and loop functions.
-  - **board_init.cpp**: Implementation of board initialization functions.
-  - **board_init.h**: Header file declaring functions and constants for board initialization.
+- `src/main.cpp` – Firmware entry point with the serial command router and badge buffer implementation.
+- `include/types.h` – Shared constants and data structures describing badge events.
+- `platformio.ini` – PlatformIO environments for the UNO R4 Minima and UNO R4 WiFi boards.
+- `arduino-uno/` – Legacy sketches kept for reference.
 
-- **include/**: Contains header files for custom types and constants.
-  - **types.h**: Defines custom types and constants used throughout the project.
+## Getting Started
 
-- **lib/**: Documentation for any libraries used in the project.
-  - **README.md**: Information about libraries, if applicable.
+1. Install [PlatformIO](https://platformio.org/install) (VS Code extension or CLI).
+2. Select the appropriate board by editing `platformio.ini` (`uno_r4_minima` is the default).
+3. Connect the UNO R4 via USB and run `pio run -t upload` (or use the VS Code PlatformIO UI).
+4. Open a serial monitor at `115200` baud to interact with the firmware.
 
-- **platformio.ini**: Configuration file for PlatformIO, specifying environment and board type.
+### Serial Commands
 
-- **Makefile**: Build rules for compiling the source files.
+| Command | Description |
+| --- | --- |
+| `HELP` | Show the available commands. |
+| `PING` | Check connectivity (responds with `PONG`). |
+| `STATUS` | Display buffer usage. |
+| `LIST` / `LIST_PENDING` | Dump all badge events or only those pending synchronization. |
+| `ADD <ID>` | Inject a badge event (e.g., from a host application). |
+| `ACK <ID>` | Mark a badge as synchronized once persisted in the database. |
+| `CLEAR` | Remove every stored badge. |
+| `SET_LED ON|OFF` | Manually control the status LED. |
 
-- **.gitignore**: Specifies files and directories to be ignored by Git.
+Pin `D2` is configured as an input with the internal pull-up resistor. Shorting it to ground simulates a badge read and creates a synthetic event, which is useful for testing without the database layer.
 
-## Setup Instructions
+## Next Steps
 
-1. Clone the repository to your local machine.
-2. Open the project in your preferred IDE.
-3. Install any required libraries as specified in `platformio.ini`.
-4. Compile the project using the provided Makefile or through PlatformIO.
-5. Upload the code to your Arduino Uno Rev4 board.
-
-## Usage
-
-Once uploaded, the Arduino will initialize and run the main logic defined in `main.cpp`. You can modify the code in `board_init.cpp` and `main.cpp` to implement your desired functionalities.
-
-## Contributing
-
-Feel free to contribute to this project by submitting issues or pull requests. Your feedback and improvements are welcome!
+- Replace the simulated badge input with the actual reader hardware.
+- Bridge the serial protocol to a host application that forwards `BadgeEvent` JSON blobs to the target database.
+- Extend the command set with authentication and configuration features as needed.

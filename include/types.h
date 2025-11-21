@@ -1,16 +1,27 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-// Define custom types and constants here
+#include <Arduino.h>
 
-typedef enum {
-    LED_PIN = 13,
-    BUTTON_PIN = 2
-} PinConfig;
+// Shared constants used throughout the firmware.
+constexpr uint8_t STATUS_LED_PIN = LED_BUILTIN;
+constexpr uint8_t BADGE_INPUT_PIN = 2;          // Placeholder for a badge reader input line
+constexpr size_t MAX_BADGE_BUFFER = 32;         // Max number of badge events kept locally
+constexpr size_t CARD_ID_LENGTH = 16;           // Length (chars) of badge IDs accepted
+constexpr size_t SERIAL_LINE_BUFFER = 96;       // Serial command buffer size
 
-typedef struct {
-    int value;
-    bool state;
-} SensorData;
+struct BadgeEvent {
+    char cardId[CARD_ID_LENGTH + 1];
+    uint32_t timestamp;      // milliseconds since boot
+    bool pendingSync;        // true if not yet acknowledged by the host/database
+};
 
-#endif // TYPES_H
+enum class CommandResult : uint8_t {
+    Ok,
+    Error,
+    BufferFull,
+    UnknownCommand,
+    InvalidPayload
+};
+
+#endif  // TYPES_H
