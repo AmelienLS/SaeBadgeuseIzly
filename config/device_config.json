@@ -1,0 +1,15 @@
+{
+  "wifi": {
+    "ssid": "YOUR_WIFI_SSID",
+    "password": "YOUR_WIFI_PASSWORD"
+  },
+  "backend": {
+    "host": "192.168.0.10",
+    "port": 80,
+    "path": "/Base_Seances.sql"
+  },
+  "device": {
+    "uid": "DEVICE-0001",
+    "ownerCardId": "CARD-1234567890"
+  }
+}

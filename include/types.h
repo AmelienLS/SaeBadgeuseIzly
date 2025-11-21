@@ -21,7 +21,12 @@ enum class CommandResult : uint8_t {
     Error,
     BufferFull,
     UnknownCommand,
-    InvalidPayload
+    InvalidPayload,
+    NetworkUnavailable,
+    StorageUnavailable,
+    TransferFailed,
+    Busy,
+    FeatureUnavailable
 };
 
 #endif  // TYPES_H
