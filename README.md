@@ -1,62 +1,62 @@
 # SAE Badgeuse (Arduino UNO R4)
 
-Firmware scaffold for an Arduino UNO R4 (Minima or WiFi) badge reader that buffers badge events locally and exposes a simple serial protocol for a future database/backend bridge.
+Ce projet fournit un firmware pour badgeuse basée sur Arduino UNO R4 (Minima ou WiFi). Les passages de badge sont tamponnés localement et exposés via un protocole série minimal afin d’être transmis à une base de données ou à une application distante.
 
-## Project Structure
+## Structure du projet
 
-- `src/main.cpp` – Firmware entry point with the serial command router and badge buffer implementation.
-- `include/types.h` – Shared constants and data structures describing badge events.
-- `include/config.h` – Scheduling constants, SD paths, and default values consumed by the automated database sync.
-- `config/device_config.example.json` – Template JSON file that must be copied to the SD card (as `device_config.json`) and filled with WiFi/backend/device credentials.
-- `platformio.ini` – PlatformIO environments for the UNO R4 Minima and UNO R4 WiFi boards.
-- `arduino-uno/` – Legacy sketches kept for reference.
+- `src/main.cpp` – point d’entrée du firmware : boucle principale, tampon d’événements et commandes série.
+- `include/types.h` – constantes partagées et structures décrivant les événements de badge.
+- `include/config.h` – constantes de planification, chemins SD et valeurs par défaut utilisées tant qu’aucun fichier de configuration externe n’est chargé.
+- `config/device_config.example.json` – modèle à copier sur la carte SD sous le nom `device_config.json` en renseignant le WiFi, le backend et les métadonnées du boîtier.
+- `platformio.ini` – environnements PlatformIO pour les UNO R4 Minima et UNO R4 WiFi。
+- `arduino-uno/` – anciens sketches conservés pour référence.
 
-## Getting Started
+## Mise en route
 
-1. Install [PlatformIO](https://platformio.org/install) (VS Code extension or CLI).
-2. If you plan to use the automated WiFi/SD synchronization, switch to the `uno_r4_wifi` environment in `platformio.ini` and populate an SD card with a `device_config.json` file (see below) that contains your WiFi credentials plus the HTTP server that exposes `Base_Seances.sql`.
-3. Connect the UNO R4 via USB and run `pio run -t upload` (or use the VS Code PlatformIO UI).
-4. Open a serial monitor at `115200` baud to interact with the firmware.
+1. Installez [PlatformIO](https://platformio.org/install) (extension VS Code ou CLI).
+2. Pour activer la synchronisation WiFi/SD, sélectionnez l’environnement `uno_r4_wifi` dans `platformio.ini` et placez un fichier `device_config.json` (voir plus bas) à la racine de la carte SD avec vos identifiants WiFi et le serveur qui expose `Base_Seances.sql`.
+3. Branchez l’UNO R4 en USB puis exécutez `pio run -t upload` (ou utilisez l’interface PlatformIO).
+4. Ouvrez un moniteur série à `115200` bauds pour interagir avec le firmware.
 
-### Serial Commands
+### Commandes série
 
-| Command | Description |
+| Commande | Description |
 | --- | --- |
-| `HELP` | Show the available commands. |
-| `PING` | Check connectivity (responds with `PONG`). |
-| `STATUS` | Display buffer usage. |
-| `LIST` / `LIST_PENDING` | Dump all badge events or only those pending synchronization. |
-| `ADD <ID>` | Inject a badge event (e.g., from a host application). |
-| `ACK <ID>` | Mark a badge as synchronized once persisted in the database. |
-| `CLEAR` | Remove every stored badge. |
-| `SET_LED ON|OFF` | Manually control the status LED. |
-| `SYNC` | Force the WiFi+SD database download (UNO R4 WiFi). |
+| `HELP` | Affiche la liste des commandes disponibles. |
+| `PING` | Vérifie la connexion (réponse `PONG`). |
+| `STATUS` | Affiche l’état du tampon, du WiFi/SD et de la configuration. |
+| `LIST` / `LIST_PENDING` | Liste tous les badges ou uniquement ceux en attente de synchronisation. |
+| `ADD <ID>` | Injecte manuellement un événement de badge (test, script hôte…). |
+| `ACK <ID>` | Marque un badge comme synchronisé après traitement côté base. |
+| `CLEAR` | Vide le tampon local. |
+| `SET_LED ON|OFF` | Force l’état de la LED de statut. |
+| `SYNC` | Déclenche immédiatement le téléchargement WiFi→SD de la base (UNO R4 WiFi). |
 
-Pin `D2` is configured as an input with the internal pull-up resistor. Shorting it to ground simulates a badge read and creates a synthetic event, which is useful for testing without the database layer.
+La broche `D2` est configurée en entrée avec résistance de tirage interne. La relier à la masse simule un badge et crée un événement synthétique—pratique pour tester sans lecteur réel.
 
-## Device Configuration File
+## Fichier de configuration
 
-Place a `device_config.json` file at the root of the UNO R4 WiFi's micro-SD card. You can start from `config/device_config.example.json` and adjust the fields:
+Copiez `device_config.json` à la racine de la carte micro-SD. Utilisez `config/device_config.example.json` comme point de départ :
 
-| Section | Field | Description |
+| Section | Champ | Description |
 | --- | --- | --- |
-| `wifi` | `ssid`, `password` | Credentials for the protected internal network. |
-| `backend` | `host`, `port`, `path` | HTTP(S) endpoint that serves `Base_Seances.sql`. |
-| `device` | `uid` | Unique identifier for the badge reader enclosure/asset. |
-| `device` | `ownerCardId` | Badge/card ID of the authorized person responsible for the unit. |
+| `wifi` | `ssid`, `password` | Identifiants du réseau interne sécurisé. |
+| `backend` | `host`, `port`, `path` | Adresse HTTP(S) du fichier `Base_Seances.sql`. |
+| `device` | `uid` | Identifiant unique du boîtier. |
+| `device` | `ownerCardId` | Numéro de badge du responsable du boîtier. |
 
-If the file is missing or malformed, the firmware falls back to the placeholder values compiled into `include/config.h`, so update that file with safe defaults before distributing binaries.
+Si le fichier manque ou est invalide, le firmware retombe sur les valeurs par défaut de `include/config.h`. Pensez à y définir des valeurs sûres avant de diffuser un binaire.
 
-## Daily Database Refresh (UNO R4 WiFi)
+## Rafraîchissement quotidien de la base (UNO R4 WiFi)
 
-- The firmware connects to the protected WiFi network, fetches `Base_Seances.sql` from the configured server, and stores it on the on-board micro-SD card once every 24 hours.
-- A temporary file is written first; the previous dump is deleted only after the new version is completely stored to avoid corruption.
-- Use the `SYNC` command to trigger the procedure immediately (useful for debugging).
-- Progress appears on the serial console (`[WiFi]`, `[SD]`, `[SYNC]` logs). The `STATUS` command reports WiFi/SD readiness plus the last/next sync timestamps.
+- Le firmware se connecte au WiFi interne, télécharge `Base_Seances.sql` depuis le serveur configuré et l’écrit sur la carte micro-SD toutes les 24 heures.
+- L’écriture passe par un fichier temporaire ; l’ancienne copie n’est supprimée qu’une fois la nouvelle complètement enregistrée, afin d’éviter toute corruption.
+- La commande `SYNC` permet de lancer manuellement l’opération (tests, maintenance, débogage).
+- Les journaux `[WiFi]`, `[SD]`, `[SYNC]` sont visibles sur le port série, et `STATUS` indique la disponibilité WiFi/SD ainsi que l’heure de la dernière/prochaine synchronisation.
 
-## Next Steps
+## Prochaines étapes
 
-- Replace the simulated badge input with the actual reader hardware.
-- Bridge the serial protocol to a host application that forwards `BadgeEvent` JSON blobs to the target database.
-- Wire the SD card dump into whichever middleware will import the SQL data and keep the database synchronized.
-- Extend the command set with authentication and configuration features as needed.
+- Remplacer l’entrée simulée par le véritable lecteur de badges.
+- Relier le protocole série à l’application ou au service qui insérera les événements dans la base.
+- Intégrer le dump SD dans votre chaîne d’import SQL afin de maintenir la base synchronisée.
+- Étendre les commandes (authentification, configuration distante, diagnostics, etc.) selon vos besoins.
