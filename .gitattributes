@@ -1,0 +1,38 @@
+# Gestion automatique des fins de ligne
+* text=auto
+
+# Scripts shell : toujours LF (Unix)
+*.sh text eol=lf
+
+# Scripts Python : toujours LF
+*.py text eol=lf
+
+# Fichiers source C/C++ : toujours LF
+*.cpp text eol=lf
+*.h text eol=lf
+*.c text eol=lf
+*.hpp text eol=lf
+*.ino text eol=lf
+
+# Fichiers de configuration
+*.ini text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# SQL : toujours LF
+*.sql text eol=lf
+
+# PHP : toujours LF
+*.php text eol=lf
+
+# Markdown
+*.md text eol=lf
+
+# Fichiers binaires
+*.bin binary
+*.elf binary
+*.hex binary
+*.a binary
+*.o binary
+*.so binary

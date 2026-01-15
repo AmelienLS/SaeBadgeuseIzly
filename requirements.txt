@@ -1,0 +1,4 @@
+# Dépendances Python pour le projet SAE Badgeuse
+# Installer avec: pip install -r requirements.txt
+
+platformio>=6.1.0,<7.0.0
