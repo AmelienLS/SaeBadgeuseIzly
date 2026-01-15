@@ -7,8 +7,11 @@
 
 set -e
 
-VENV_DIR=".venv"
-PROJECT_DIR=$(cd "$(dirname "$0")" && pwd)
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+PROJECT_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
+VENV_DIR="$PROJECT_DIR/.venv"
+
+cd "$PROJECT_DIR"
 
 # Vérifier que l'environnement virtuel existe
 if [ ! -d "$VENV_DIR" ]; then
@@ -40,8 +43,8 @@ echo "  ✅ Compilation réussie !"
 echo "======================================"
 echo ""
 echo "Pour téléverser:"
-echo "   ./upload.sh"
+echo "   ./scripts/upload.sh"
 echo ""
 echo "Pour le moniteur série:"
-echo "   ./monitor.sh"
+echo "   ./scripts/monitor.sh"
 echo ""

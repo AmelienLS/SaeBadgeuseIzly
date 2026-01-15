@@ -5,8 +5,12 @@
 # Vérifie que tout est correctement configuré
 # ============================================
 
-VENV_DIR=".venv"
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+PROJECT_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
+VENV_DIR="$PROJECT_DIR/.venv"
 ERROR_COUNT=0
+
+cd "$PROJECT_DIR"
 
 echo "======================================"
 echo "  Vérification de l'installation"
@@ -82,10 +86,10 @@ echo "🔍 Vérification des scripts..."
 echo ""
 
 # 5. Vérifier que les scripts sont exécutables
-[ -x "setup_env.sh" ] && check_item 0 "setup_env.sh est exécutable" || check_item 1 "setup_env.sh n'est pas exécutable"
-[ -x "build.sh" ] && check_item 0 "build.sh est exécutable" || check_item 1 "build.sh n'est pas exécutable"
-[ -x "upload.sh" ] && check_item 0 "upload.sh est exécutable" || check_item 1 "upload.sh n'est pas exécutable"
-[ -x "monitor.sh" ] && check_item 0 "monitor.sh est exécutable" || check_item 1 "monitor.sh n'est pas exécutable"
+[ -x "scripts/setup_env.sh" ] && check_item 0 "scripts/setup_env.sh est exécutable" || check_item 1 "scripts/setup_env.sh n'est pas exécutable"
+[ -x "scripts/build.sh" ] && check_item 0 "scripts/build.sh est exécutable" || check_item 1 "scripts/build.sh n'est pas exécutable"
+[ -x "scripts/upload.sh" ] && check_item 0 "scripts/upload.sh est exécutable" || check_item 1 "scripts/upload.sh n'est pas exécutable"
+[ -x "scripts/monitor.sh" ] && check_item 0 "scripts/monitor.sh est exécutable" || check_item 1 "scripts/monitor.sh n'est pas exécutable"
 
 echo ""
 echo "🔍 Vérification de la configuration..."
@@ -112,9 +116,9 @@ if [ $ERROR_COUNT -eq 0 ]; then
     echo "======================================"
     echo ""
     echo "Vous pouvez maintenant :"
-    echo "  ./build.sh    - Compiler le projet"
-    echo "  ./upload.sh   - Téléverser sur l'Arduino"
-    echo "  ./monitor.sh  - Moniteur série"
+    echo "  ./scripts/build.sh    - Compiler le projet"
+    echo "  ./scripts/upload.sh   - Téléverser sur l'Arduino"
+    echo "  ./scripts/monitor.sh  - Moniteur série"
     echo ""
     exit 0
 else
@@ -122,9 +126,9 @@ else
     echo "======================================"
     echo ""
     if [ ! -d "$VENV_DIR" ]; then
-        echo "💡 Lancez d'abord : ./setup_env.sh"
-    elif [ ! -x "setup_env.sh" ]; then
-        echo "💡 Rendez les scripts exécutables : chmod +x *.sh"
+        echo "💡 Lancez d'abord : ./scripts/setup_env.sh"
+    elif [ ! -x "scripts/setup_env.sh" ]; then
+        echo "💡 Rendez les scripts exécutables : chmod +x scripts/*.sh"
     fi
     echo ""
     exit 1

@@ -7,7 +7,11 @@
 
 set -e
 
-VENV_DIR=".venv"
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+PROJECT_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
+VENV_DIR="$PROJECT_DIR/.venv"
+
+cd "$PROJECT_DIR"
 
 # Vérifier que l'environnement virtuel existe
 if [ ! -d "$VENV_DIR" ]; then

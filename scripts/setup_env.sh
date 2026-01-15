@@ -7,8 +7,11 @@
 
 set -e  # Arrêter en cas d'erreur
 
-VENV_DIR=".venv"
-PROJECT_DIR=$(cd "$(dirname "$0")" && pwd)
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+PROJECT_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
+VENV_DIR="$PROJECT_DIR/.venv"
+
+cd "$PROJECT_DIR"
 
 echo "======================================"
 echo "  Configuration environnement projet"
@@ -81,8 +84,8 @@ echo "5. Pour quitter l'environnement:"
 echo "   deactivate"
 echo ""
 
-# Créer un fichier d'activation rapide
-cat > activate.sh << 'EOF'
+# Créer un fichier d'activation rapide à la racine
+cat > "$PROJECT_DIR/activate.sh" << 'EOF'
 #!/bin/bash
 # Script d'activation rapide de l'environnement virtuel
 source "$(dirname "$0")/.venv/bin/activate"
@@ -91,7 +94,7 @@ echo "   Pour compiler: pio run -e uno_r4_wifi"
 echo "   Pour quitter: deactivate"
 EOF
 
-chmod +x activate.sh
+chmod +x "$PROJECT_DIR/activate.sh"
 
 echo "💡 Astuce: Utilisez './activate.sh' pour activer rapidement l'environnement"
 echo ""

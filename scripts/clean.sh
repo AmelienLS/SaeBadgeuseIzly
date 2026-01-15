@@ -7,7 +7,10 @@
 
 set -e
 
-PROJECT_DIR=$(cd "$(dirname "$0")" && pwd)
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+PROJECT_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
+
+cd "$PROJECT_DIR"
 
 echo "======================================"
 echo "  Nettoyage du projet"
@@ -69,5 +72,5 @@ echo "  ✅ Nettoyage terminé !"
 echo "======================================"
 echo ""
 echo "Pour reconfigurer l'environnement :"
-echo "  ./setup_env.sh"
+echo "  ./scripts/setup_env.sh"
 echo ""
